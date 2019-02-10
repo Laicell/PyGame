@@ -25,7 +25,7 @@ def load_image(name, colorkey=None):
 
 class Hero(pygame.sprite.Sprite):
     def __init__(self, sheet, columns, rows, x, y):
-        super().__init__(all_sprites)
+        #super().__init__(all_sprites)
         self.frames = []
         self.cut_sheet(sheet, columns, rows)
         self.cur_frame = 0
@@ -44,13 +44,28 @@ class Hero(pygame.sprite.Sprite):
     def update(self):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
+
+    def render(self, screen, x, y):
+        global animCount
+        if animCount + 1 >= 15:
+            animCount = 0
+
+        if right:
+            screen.blit(self.frames[animCount // 5], (x,y))
+            animCount += 1
+        else:
+            screen.blit(self.frames[0], (x,y))
+        #screen.blit(self.image, (x,y))
         
 
 
-all_sprites = pygame.sprite.Group()
+#all_sprites = pygame.sprite.Group()
 x = 100
 y = 200
-speed = 5
+speed = 10
+left = False
+right = False
+animCount = 0
 hero = Hero(load_image("ggg.png"), 4, 1, x, y)
 clock = pygame.time.Clock()
 running = True
@@ -61,18 +76,24 @@ while running:
             running = False
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_LEFT] and x > 5:
         x -= speed
-    if keys[pygame.K_RIGHT]:
+        left = True
+        right = False
+    elif keys[pygame.K_RIGHT]:
         x += speed
-    if keys[pygame.K_UP]:
-        y -= speed
-    if keys[pygame.K_DOWN]:
-        y += speed
-    all_sprites.draw(screen)
-    all_sprites.update()
+        left = False
+        right = True
+    else:
+        left = False
+        right = False
+        animCount = 0
+    #all_sprites.draw(screen)
+    #all_sprites.update()
+    hero.render(screen, x, y)
+    hero.update()
     pygame.display.flip()
     screen.fill((0,0,0))
-    clock.tick(10)
+    clock.tick(30)
 pygame.quit()
     
