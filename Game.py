@@ -47,47 +47,72 @@ class Hero(pygame.sprite.Sprite):
 
     def render(self, screen, x, y):
         global animCount
-        if animCount + 1 >= 15:
+        if animCount + 1 >= 30:
             animCount = 0
 
         if right:
-            screen.blit(self.frames[animCount // 5], (x,y))
+            screen.blit(walkRight[animCount // 5], (x,y))
             animCount += 1
+
+        elif left:
+            screen.blit(walkLeft[animCount // 5], (x,y))
+            animCount += 1
+        
         else:
-            screen.blit(self.frames[0], (x,y))
+            if side == 1:
+                screen.blit(playerStand[0], (x,y))
+            else:
+                screen.blit(playerStand[1], (x,y))
         #screen.blit(self.image, (x,y))
         
+
+walkRight = [load_image("r1.png",1),load_image("r2.png",1),
+             load_image("r3.png",1),load_image("r4.png",1),
+             load_image("r5.png",1),load_image("r6.png",1)]
+
+walkLeft = [load_image("l1.png",1),load_image("l2.png",1),
+             load_image("l3.png",1),load_image("l4.png",1),
+             load_image("l5.png",1),load_image("l6.png",1)]
+
+playerStand = [load_image("st.png",1), load_image("stl.png",1)]
 
 
 #all_sprites = pygame.sprite.Group()
 x = 100
 y = 200
-speed = 10
+speed = 5
 left = False
 right = False
+side = 0
 animCount = 0
 hero = Hero(load_image("ggg.png"), 4, 1, x, y)
 clock = pygame.time.Clock()
 running = True
+
 while running:
-    pygame.time.delay(100)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
     keys = pygame.key.get_pressed()
+
     if keys[pygame.K_LEFT] and x > 5:
         x -= speed
         left = True
         right = False
+        side = 0
+
     elif keys[pygame.K_RIGHT]:
         x += speed
         left = False
         right = True
+        side = 1
+
     else:
         left = False
         right = False
         animCount = 0
+
     #all_sprites.draw(screen)
     #all_sprites.update()
     hero.render(screen, x, y)
@@ -95,5 +120,6 @@ while running:
     pygame.display.flip()
     screen.fill((0,0,0))
     clock.tick(30)
+
 pygame.quit()
     
