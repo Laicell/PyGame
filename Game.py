@@ -362,7 +362,7 @@ class Tile(pygame.sprite.Sprite):
 
 # Инициализация
 camera = Camera()
-player = Player(120, 340)
+player = Player(600, 400)
 generate_level(load_level('map.txt'))
 
 
